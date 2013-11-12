@@ -1,0 +1,48 @@
+package com.zeromatrix.TestProject;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.thoughtworks.selenium.Selenium;
+
+public class TestProject {
+
+    public static void main(String[] args) {
+        // Create a new instance of the html unit driver
+        // Notice that the remainder of the code relies on the interface, 
+        // not the implementation.
+        WebDriver driver = new HtmlUnitDriver();
+        Selenium selenium;
+
+        // And now use this to visit Google
+        driver.get("http://www.tescobank.com/sss/authcc");
+        selenium.waitForPageToLoad("30000000");
+
+        // Find the text input element by its name
+        WebElement element = driver.findElement(By.id("login-uid"));
+
+        // Enter something to search for
+        element.sendKeys("gary.lundie");
+        ((HtmlUnitDriver) driver).setJavascriptEnabled(true);
+        // Now submit the form. WebDriver will find the form for us from the element
+        element.submit();
+
+        // Check the title of the page
+        System.out.println("Page title is: " + driver.getTitle());
+        driver.findElement(By.id("page-alert-close")).click();
+        //driver.findElement(By.id("DIGIT1")).sendKeys("0")
+        driver.findElement(By.id("DIGIT2")).sendKeys("5");
+        //driver.findElement(By.id("DIGIT3")).sendKeys("2");
+        //driver.findElement(By.id("DIGIT4")).sendKeys("0");
+        //driver.findElement(By.id("DIGIT5")).sendKeys("2");
+        //driver.findElement(By.id("DIGIT6")).sendKeys("2");
+        new WebDriverWait(driver,100);
+        driver.findElement(By.id("NEXTBUTTON"));
+        System.out.println("Page title is: " + driver.getTitle());
+    }
+
+}

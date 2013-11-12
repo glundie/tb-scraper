@@ -1,0 +1,38 @@
+package com.zeromatrix.TestProject;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.thoughtworks.selenium.Selenium;
+
+public class TestProject {
+
+    public static void main(String[] args) {
+        // Create a new instance of the html unit driver
+        // Notice that the remainder of the code relies on the interface, 
+        // not the implementation.
+    	WebDriver driver = new HtmlUnitDriver(true);
+        driver.get("http://www.tescobank.com/sss/authcc");
+        WebElement username= driver.findElement(By.id("login-uid"));
+        Actions builder = new Actions(driver);
+        Actions seriesOfActions = builder.moveToElement(username).click().sendKeys(username, "gary.lundie");
+        seriesOfActions.perform();
+        WebElement submitBtn = driver.findElement(By.name("submit"));
+        Actions seriesOfAction = builder.moveToElement(submitBtn).click();
+        seriesOfAction.perform();
+        System.out.println("Page title is: " + driver.getTitle());
+        driver.findElement(By.id("page-alert-close")).click();
+        WebElement digit4= driver.findElement(By.id("DIGIT4"));
+        WebElement digit5= driver.findElement(By.id("DIGIT5"));
+        seriesOfAction = builder.moveToElement(digit4).click().sendKeys(digit4,"0").moveToElement(digit5).click().sendKeys(digit5,"2");
+        seriesOfAction.perform();
+        driver.findElement(By.id("NEXTBUTTON")).click();
+        System.out.println("Page title is: " + driver.getTitle());
+    }
+
+}

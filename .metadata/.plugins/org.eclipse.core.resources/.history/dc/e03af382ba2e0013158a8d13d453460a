@@ -1,0 +1,165 @@
+package com.zeromatrix.TestProject;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.html5.LocalStorage;
+import org.openqa.selenium.html5.WebStorage;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.ExecuteMethod;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+public class TestProject {
+	 
+	static WebDriver driver;
+	static WebDriverWait wait;
+	
+	final String LOGIN_PAGE_URL="http://www.tescobank.com/sss/authcc";
+	
+	public TestProject(){
+		driver = new HtmlUnitDriver(true);
+		java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF); 
+	    java.util.logging.Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
+		wait = new WebDriverWait(driver,20);
+	}
+	
+	
+	boolean sendUsername(String username){
+		driver.get(LOGIN_PAGE_URL);
+		driver.findElement(By.xpath("//*[@id='login-uid']")).sendKeys(username);
+		driver.findElement(By.name("submit")).click();
+		return true;
+	}
+	
+	boolean setOTP(String aotpKey, String aotpValue){
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		jse.executeScript("localStorage.setItem('"+aotpKey+"','"+aotpValue+"');");
+		return true;
+	}
+	
+	boolean sendSN(){
+        WebElement digit1= driver.findElement(By.id("DIGIT1"));
+        WebElement digit2= driver.findElement(By.id("DIGIT2"));
+        WebElement digit3= driver.findElement(By.id("DIGIT3"));
+        WebElement digit4= driver.findElement(By.id("DIGIT4"));
+        WebElement digit5= driver.findElement(By.id("DIGIT5"));
+        WebElement digit6= driver.findElement(By.id("DIGIT6"));
+        if(digit1.isEnabled()) digit1.sendKeys("0",Keys.TAB);
+        if(digit2.isEnabled()) digit2.sendKeys("5",Keys.TAB);
+        if(digit3.isEnabled()) digit3.sendKeys("2",Keys.TAB);
+        if(digit4.isEnabled()) digit4.sendKeys("0",Keys.TAB);
+        if(digit5.isEnabled()) digit5.sendKeys("2",Keys.TAB);
+        if(digit6.isEnabled()) digit6.sendKeys("2",Keys.TAB);
+        return true;
+	}
+	
+	boolean clickNext(){
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver driver) {
+              WebElement button = driver.findElement(By.id("NEXTBUTTON"));
+              return button.isEnabled();
+            }});
+        driver.findElement(By.id("NEXTBUTTON")).click();
+        return true;
+	}
+	
+	boolean sendOTA(){
+		driver.findElement(By.id("SEND-OTA")).click();
+		return true;
+	}
+	
+	boolean isRoaming(){
+		Boolean isPresent = driver.findElements(By.id("page-alert-close")).size()>0;
+		if(isPresent)
+			driver.findElement(By.id("page-alert-close")).click();
+		return isPresent;
+	}
+	
+	boolean validateOTA(String ota){
+		driver.findElement(By.id("OTP")).sendKeys(ota,Keys.TAB);
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver driver) {
+              WebElement button = driver.findElement(By.id("NEXTBUTTON"));
+              return button.isEnabled();
+            }});
+        driver.findElement(By.id("NEXTBUTTON")).click();
+        return true;
+	}
+	
+	boolean sendRoamingPassword(String password){
+		driver.findElement(By.xpath("//*[@id='PASSWORD']")).sendKeys(password, Keys.TAB);
+        driver.findElement(By.xpath("//input[@name='DOWNLOADAID' and @value='Y']")).click();
+        clickNext();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='sv-creditcard-product-1']/div/div[1]/div[2]/div[1]/dl/dd")));
+        return true;
+	}
+	
+	boolean sendRecognisedPassword(String password){
+		driver.findElement(By.xpath("//*[@id='PASSWORD']")).sendKeys(password);
+        clickNext();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='sv-creditcard-product-1']/div/div[1]/div[2]/div[1]/dl/dd")));
+        return true;
+	}
+	
+	String getCCBalance(){
+		 WebElement ccbalance = driver.findElement(By.xpath("//*[@id='sv-creditcard-product-1']/div/div[1]/div[2]/div[1]/dl/dd"));
+	     return ccbalance.getText();
+	}
+	
+	String getOTP(){
+		JavascriptExecutor jse = (JavascriptExecutor)driver;
+		String cssoId = (String)jse.executeScript("return localStorage.key(0);");
+        String OTP=(String)jse.executeScript("return localStorage['"+cssoId+"'];");
+        return (cssoId+" => "+OTP);
+	}
+	
+    public static void main(String[] args) {
+    	String PASSWORD="omege593";
+    	String AOTPKEY="aotpx_f787e9b1af944d50b9f2d13fa2005e2c";
+    	String AOTPVALUE="<?xml version=\"1.0\" encoding=\"UTF-8\"?><response xmlns=\"http://xs.arcot.com/ArcotOTPProtocolSvc/1.0\"><status>success</status><reqid>1</reqid><aid>f787e9b1af944d50b9f2d13fa2005e2c</aid><displayName>F787E9B1AF944D50B9F2D13FA2005E2C(TOTP)</displayName><logoUrl></logoUrl><expiry>2142839911</expiry><algo><algoType>TOTP</algoType><provUrl> </provUrl><cs>VER_=0.0.0::TYPE=TOTP::TVAR=0::TSTP=30::DIGS=8::UID_=F787E9B1AF944D50B9F2D13FA2005E2C::UIDS=0001::UDK_=0DC139393118AC6155270A91272F46458B49352C::ORG_=DEFAULTORG::USER=F787E9B1AF944D50B9F2D13FA2005E2C::CTR_=0::</cs></algo><uses>0</uses><lastUsed>NA</lastUsed><id>aotpx_f787e9b1af944d50b9f2d13fa2005e2c</id><tokenVersion>0d18592cd14a4b63620e3d4ec2fef8aa</tokenVersion><ns>login.myproducts.tescobank.com</ns><version>1.0</version></response>";
+    	
+    	TestProject tescobank = new TestProject();
+    	if(AOTPKEY==""){
+    		tescobank.sendUsername("gary.lundie");
+    	}else{
+    		tescobank.sendUsername("gary.lundie");
+    		tescobank.setOTP(AOTPKEY,AOTPVALUE);
+        	tescobank.sendUsername("gary.lundie");
+    	}
+    	if(tescobank.isRoaming()){
+    		tescobank.sendSN();
+    		tescobank.clickNext();
+    		tescobank.sendOTA();
+    		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String ota="";
+    		try {
+    			System.out.println("Enter OTA:");
+    			ota = br.readLine();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+            tescobank.validateOTA(ota);
+            tescobank.sendRoamingPassword(PASSWORD);
+            System.out.println(tescobank.getCCBalance());
+            System.out.println(tescobank.getOTP());
+    	}else{
+    		tescobank.sendSN();
+    		tescobank.sendRecognisedPassword(PASSWORD);
+    		System.out.println(tescobank.getCCBalance());
+        }
+    }
+}

@@ -1,0 +1,74 @@
+package com.zeromatrix.TestProject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.interactions.Actions;
+
+import com.thoughtworks.selenium.Selenium;
+
+public class TestProject {
+	WebDriver driver = new HtmlUnitDriver(true);
+	
+    public static void main(String[] args) {
+        // Create a new instance of the html unit driver
+        // Notice that the remainder of the code relies on the interface, 
+        // not the implementation.
+        driver.get("http://www.tescobank.com/sss/authcc");
+        WebElement username= driver.findElement(By.id("login-uid"));
+        Actions builder = new Actions(driver);
+        Actions seriesOfActions = builder.moveToElement(username).click().sendKeys(username, "gary.lundie");
+        seriesOfActions.perform();
+        WebElement submitBtn = driver.findElement(By.name("submit"));
+        Actions seriesOfAction = builder.moveToElement(submitBtn).click();
+        seriesOfAction.perform();
+        System.out.println("Page title is: " + driver.getTitle());
+        driver.findElement(By.id("page-alert-close")).click();
+        WebElement digit1= driver.findElement(By.id("DIGIT1"));
+        WebElement digit2= driver.findElement(By.id("DIGIT2"));
+        WebElement digit3= driver.findElement(By.id("DIGIT3"));
+        WebElement digit4= driver.findElement(By.id("DIGIT4"));
+        WebElement digit5= driver.findElement(By.id("DIGIT5"));
+        WebElement digit6= driver.findElement(By.id("DIGIT6"));
+        if(digit1.isEnabled()) digit1.sendKeys("0");
+        if(digit2.isEnabled()) digit2.sendKeys("5");
+        if(digit3.isEnabled()) digit3.sendKeys("2");
+        if(digit4.isEnabled()) digit4.sendKeys("0");
+        if(digit5.isEnabled()) digit5.sendKeys("2");
+        if(digit6.isEnabled()) digit6.sendKeys("2");
+        System.out.println(driver.findElement(By.id("NEXTBUTTON")).isEnabled());
+        try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        driver.findElement(By.id("NEXTBUTTON")).click();
+        System.out.println("Page title is: " + driver.getTitle());
+        driver.findElement(By.id("SEND-OTA")).click();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String ota="";
+		try {
+			ota = br.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        driver.findElement(By.id("OTP")).sendKeys(ota);
+        driver.findElement(By.id("NEXTBUTTON")).click();
+        try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        driver.findElement(By.id("NEXTBUTTON")).click();
+        System.out.println("Page title is: " + driver.getTitle());
+ }
+
+}

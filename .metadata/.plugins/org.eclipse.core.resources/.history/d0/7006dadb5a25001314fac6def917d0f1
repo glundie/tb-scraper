@@ -1,0 +1,32 @@
+package com.zeromatrix.TestProject;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import com.thoughtworks.selenium.Selenium;
+
+public class TestProject {
+
+    public static void main(String[] args) {
+        // Create a new instance of the html unit driver
+        // Notice that the remainder of the code relies on the interface, 
+        // not the implementation.
+    	WebDriver driver = new HtmlUnitDriver();
+        driver.get("http://www.facebook.com");
+        WebElement email= driver.findElement(By.id("email"));
+        Actions builder = new Actions(driver);
+        Actions seriesOfActions = builder.moveToElement(email).click().sendKeys(email, "gati.naveen@gmail.com");
+        seriesOfActions.perform();
+        WebElement pass = driver.findElement(By.id("pass"));
+        WebElement login =driver.findElement(By.id("u_0_b"));
+        Actions seriesOfAction = builder.moveToElement(pass).click().sendKeys(pass, "naveench").click(login);
+        seriesOfAction.perform();
+        System.out.println("Page title is: " + driver.getTitle());
+    }
+
+}
